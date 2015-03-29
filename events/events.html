@@ -1,0 +1,183 @@
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" ng-click="gotoHome()" href="">KANOE</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a ng-click= "gotoPeople()" href="">People</a></li>
+      <li><a ng-click= "gotoProjects()" href="">Projects</a></li>
+      <li><a ng-click= "gotoPublications()" href="">Publications</a></li>
+      <li><a ng-click= "gotoEvents()" href="">Events</a></li>
+      <li><a ng-click= "gotoContact()" href="">Contact</a></li>
+          <!-- <li class="active"><a href="#">Link</a></li>
+          <li><a href="#">Link</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+              <li class="divider"></li>
+              <li><a href="#">One more separated link</a></li>
+            </ul>
+          </li> -->
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+        <li><a ng-if="!loggedin" ng-click="gotoLogin()" href="">Login</a></li>
+        <li><a ng-if="loggedin" ng-click="signout()" href="">Signout</a></li>
+       </ul> 
+        <!-- <form class="navbar-form navbar-left" role="search">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search">
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">Link</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+            </ul>
+          </li>
+        </ul> -->
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div id="tabs" class= "container">
+    <ul class="nav nav-tabs nav-justified" role="tablist">
+      <li><a ng-click= "viewEvent()" href= "">View Events</a></li>
+      <li><a ng-if= "loggedin" ng-click= "addEvent()" href= "">Add Event</a></li>
+      <li><a ng-if= "loggedin" ng-click= "deleteEvent()" href= "">Delete Event(s)</a></li>
+    </ul>
+    <div id="mainView">
+      <div ng-include="currentTab"></div>
+    </div>
+  </div>
+  <script type="text/ng-template" id="add">
+  <div id="addP">
+  <h2>Create Event Form</h2>
+  <div class= "container jumbotron">
+  <label>Event title</label>
+    <input type="text" class="form-control" placeholder="Enter title" ng-model= "data.title">
+    <br>
+  <label>Event description</label>
+  
+  <input type="text" class="form-control" placeholder="Enter description" ng-model= "data.description">
+ <br>
+  <label>Place</label>
+  
+  <input type="text" class="form-control" placeholder="Enter place" ng-model= "data.place">
+<br>
+<label>Date(mm/dd/yyyy)</label>
+  
+  <input type="date" class="form-control" placeholder="Enter date" ng-model= "data.date">
+<br>
+<label>Remarks</label>
+  
+  <input type="text" class="form-control" placeholder="Enter remarks" ng-model= "data.remarks">
+<br>
+    
+    <p><a class="btn btn-primary btn-lg" role="button" ng-click="submitAdd()">Submit</a></p>
+
+  </div>
+  </div>
+  </script>
+
+  <script type="text/ng-template" id="view">
+  <div id="viewElogged1" ng-if= "loggedin">
+    <h2>Event List</h2>
+    <div class= "container">
+    <table class= "table table-striped" editable>
+      <tr>
+      <th>#</th>
+      <th style= "font-size:20px;">Title</th>
+      <th style= "font-size:20px;">Place</th>
+      <th style= "font-size:20px;">Date(yyyy-mm-dd)</th>
+      <th style= "font-size:20px;">Remarks</th>
+      <th></th>
+      </tr>
+      <tr ng-repeat="event in entities" ng-click="viewFullEvent(event)">
+        <td>{{$index+1}}</td>
+        <td>{{event.title.slice(0,30)}}</td>
+        <td>{{event.place.slice(0,30)}}</td>
+        <td>{{event.date.slice(0,30)}}</td>
+        <td>{{event.remarks.slice(0,30)+"..."}}</td>
+        <td><button class= "btn btn-primary" ng-click= "edit(event.id, event.title, event.description, event.place, event.date, event.remarks, $event)">Edit</button></td>
+      </tr>
+    </table>
+    <div ng-if="data.dataLoading">
+      <i style= "margin-left: 48%;" class="fa fa-spinner fa-spin fa-3x"></i>
+    </div>
+    </div>
+  </div>
+
+  <div id="viewElogged2" ng-if= "!loggedin">
+    <h2>Event List</h2>
+    <div class= "container">
+    <table class= "table table-striped" editable>
+      <tr>
+      <th>#</th>
+      <th style= "font-size:20px;">Title</th>
+      <th style= "font-size:20px;">Place</th>
+      <th style= "font-size:20px;">Date</th>
+      <th style= "font-size:20px;">Remarks</th>
+      </tr>
+      <tr ng-repeat="event in entities" ng-click="viewFullEvent(event)">
+        <td>{{$index+1}}</td>
+        <td>{{event.title.slice(0,30)}}</td>
+        <td>{{event.place.slice(0,30)}}</td>
+        <td>{{event.date.slice(0,30)}}</td>
+        <td>{{event.remarks.slice(0,30)+"..."}}</td>
+      </tr>
+    </table>
+    <div ng-if="data.dataLoading">
+      <i style= "margin-left: 48%;" class="fa fa-spinner fa-spin fa-3x"></i>
+    </div>
+    </div>
+  </div>
+  </script>
+
+  <script type="text/ng-template" id="delete">
+  <div id="deleteP">
+  <h2>Delete Event</h2>
+    <div class= "container">
+    <table class= "table table-striped" ng-model= "tab">
+      <tr>
+      <th><input type= "checkbox" class= "checkbox" ng-click= "selectAll($event)" ng-checked= "isSelectedAll()"></th>
+      <th style= "font-size:20px;">Title</th>
+      <th style= "font-size:20px;">Description</th>
+      <th style= "font-size:20px;">Place</th>
+      <th style= "font-size:20px;">Date</th>
+      <th style= "font-size:20px;">Remarks</th>
+      </tr>
+      <tr ng-repeat="event in entities" ng-class= "getSelectedClass(event)">
+        <td><input type= "checkbox" name= "selected" ng-checked= "isSelected(event.id)" ng-click= "updateSelection($event, event.id)"></td>
+        <td>{{event.title.slice(0,30)}}</td>
+        <td>{{event.description.slice(0,40)+"..."}}</td>
+        <td>{{event.place.slice(0,30)}}</td>
+        <td>{{event.date.slice(0,30)}}</td>
+        <td>{{event.remarks.slice(0,30)+"..."}}</td>
+      </tr>
+    </table>
+    <button class= "btn btn-primary" ng-click= "delete()">Delete</button>
+    </div>
+  </div>
+  </script>
